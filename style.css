@@ -429,4 +429,65 @@ p {
   align-items: center;
 }
 
+.info {
+  display: flex;
+  align-items: center;
+}
+.info__description {
+  margin: 15px;
+}
+
+.keyboard {
+  padding: 20px;
+  background-color: #eaeaea;
+  border-radius: 5px;
+  max-width: 865px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.keyboard__key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  padding: 5px;
+  margin: 2px;
+  color: #ffffff;
+  font-weight: 700;
+  background-color: #afafaf;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out 0s;
+}
+.keyboard__key:hover {
+  background-color: #aac2ff;
+}
+.keyboard__key:active, .keyboard__key.active {
+  background-color: #83a6ff;
+  border-radius: 20px;
+}
+.keyboard__key-Tab {
+  width: 62.5px;
+}
+.keyboard__key-Enter, .keyboard__key-ShiftRight {
+  width: 104px;
+}
+.keyboard__key-Backspace, .keyboard__key-CapsLock, .keyboard__key-ShiftLeft {
+  width: 116.5px;
+}
+.keyboard__key-Space {
+  width: 386px;
+}
+.keyboard__key-Backspace, .keyboard__key-CapsLock, .keyboard__key-Tab, .keyboard__key-Delete, .keyboard__key-Enter, .keyboard__key-ShiftLeft, .keyboard__key-ShiftRight, .keyboard__key-ArrowUp, .keyboard__key-ControlLeft, .keyboard__key-ControlRight, .keyboard__key-MetaLeft, .keyboard__key-AltLeft, .keyboard__key-AltRight, .keyboard__key-Space, .keyboard__key-ArrowLeft, .keyboard__key-ArrowDown, .keyboard__key-ArrowRight {
+  background-color: #878787;
+}
+
+.textarea {
+  width: 850px;
+  height: 200px;
+  margin: 20px;
+}
+
 /*# sourceMappingURL=style.css.map */
