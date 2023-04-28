@@ -15,5 +15,7 @@ module.exports = {
     'global-require': 0,
     'eslint linebreak-style': [0, 'error', 'windows'],
     'import/extensions': ['error', 'always', { ignorePackages: true }],
+    'no-use-before-define': ['error', { variables: false }],
+    'no-useless-return': 'off',
   },
 };
