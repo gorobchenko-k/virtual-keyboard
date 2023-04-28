@@ -4,89 +4,13 @@ import createKey from './createKey.js';
 
 let isCapsLock = false;
 let isShift = false;
-let currentProperty = 'en';
+let currentProperty = null;
 
-const setCurrentProperty = () => {
-  if (lang.isEnLang && (!isShift && !isCapsLock)) {
-    currentProperty = 'en';
-  } else if (!lang.isEnLang && (!isShift && !isCapsLock)) {
-    currentProperty = 'ru';
-  } else if (lang.isEnLang && isShift) {
-    currentProperty = 'shiftEn';
-  } else if (!lang.isEnLang && isShift) {
-    currentProperty = 'shiftRu';
-  } else if ((lang.isEnLang && isCapsLock)) {
-    currentProperty = 'capsLockEn';
-  } else {
-    currentProperty = 'capsLockRu';
-  }
-};
-
-const showCurrentValueOfKeys = () => {
-  setCurrentProperty();
-  const valuesOfKeys = document.querySelectorAll('.keyboard__key span');
-  const currentValueOfKeys = document.querySelectorAll(`.keyboard__key-${currentProperty}`);
-  valuesOfKeys.forEach((key) => key.classList.add('hidden'));
-  currentValueOfKeys.forEach((keyValue) => keyValue.classList.remove('hidden'));
-};
-
-const setValueInTextarea = (value) => {
-  const textarea = document.querySelector('.textarea');
-  const indexOfCursor = textarea.selectionStart;
-  textarea.value = textarea.value.slice(0, indexOfCursor) + value
-    + textarea.value.slice(indexOfCursor);
-  textarea.selectionStart = indexOfCursor + 1;
-  textarea.selectionEnd = indexOfCursor + 1;
-};
-
-const deleteValueInTextarea = (key) => {
-  const textarea = document.querySelector('.textarea');
-  const indexOfCursor = textarea.selectionStart;
-  const indexOfValue = key === 'Delete' ? indexOfCursor : indexOfCursor - 1;
-  textarea.value = textarea.value.slice(0, indexOfValue) + textarea.value.slice(indexOfValue + 1);
-  textarea.selectionStart = indexOfValue;
-  textarea.selectionEnd = indexOfValue;
-};
-
-const checkKey = (key) => {
-  const keyDom = document.querySelector(`.keyboard__key-${key}`);
-  if (key === 'ShiftLeft' || key === 'ShiftRight') {
-    isShift = true;
-    showCurrentValueOfKeys();
-  } else if (key === 'CapsLock') {
-    isCapsLock = !isCapsLock;
-    if (isCapsLock) {
-      keyDom.classList.add('active');
-    } else {
-      keyDom.classList.remove('active');
-    }
-    showCurrentValueOfKeys();
-  } else if (key === 'Tab') {
-    setValueInTextarea('\t');
-  } else if (key === 'Enter') {
-    setValueInTextarea('\n');
-  } else if (key === 'ControlLeft' || key === 'ControlRight' || key === 'AltLeft' || key === 'AltRight' || key === 'MetaLeft') {
-    // return;
-  } else if (key === 'Delete' || key === 'Backspace') {
-    deleteValueInTextarea(key);
-  } else {
-    const keyValue = keys[key][currentProperty];
-    setValueInTextarea(keyValue);
-  }
-};
-
-const checkChangeLang = (pressedKeys) => {
-  if (pressedKeys.has('ShiftLeft') && pressedKeys.has('AltLeft')) {
-    lang.isEnLang = !lang.isEnLang;
-    showCurrentValueOfKeys();
-  }
-};
-
-const createElement = (tag, classList, content = '') => {
-  const element = document.createElement(tag);
-  element.classList = classList;
-  element.innerHTML = content;
-  return element;
+const loadContentToDom = () => {
+  const content = getContent();
+  document.body.append(content);
+  showCurrentValueOfKeys();
+  addKeyboardHandler();
 };
 
 const getContent = () => {
@@ -107,11 +31,42 @@ const getContent = () => {
   return container;
 };
 
+const createElement = (tag, classList, content = '') => {
+  const element = document.createElement(tag);
+  element.classList = classList;
+  element.innerHTML = content;
+  return element;
+};
+
+const showCurrentValueOfKeys = () => {
+  setCurrentProperty();
+  const valuesOfKeys = document.querySelectorAll('.keyboard__key span');
+  const currentValueOfKeys = document.querySelectorAll(`.keyboard__key-${currentProperty}`);
+  valuesOfKeys.forEach((key) => key.classList.add('hidden'));
+  currentValueOfKeys.forEach((keyValue) => keyValue.classList.remove('hidden'));
+};
+
+const setCurrentProperty = () => {
+  if (lang.isEnLang && (!isShift && !isCapsLock)) {
+    currentProperty = 'en';
+  } else if (!lang.isEnLang && (!isShift && !isCapsLock)) {
+    currentProperty = 'ru';
+  } else if (lang.isEnLang && isShift) {
+    currentProperty = 'shiftEn';
+  } else if (!lang.isEnLang && isShift) {
+    currentProperty = 'shiftRu';
+  } else if ((lang.isEnLang && isCapsLock)) {
+    currentProperty = 'capsLockEn';
+  } else {
+    currentProperty = 'capsLockRu';
+  }
+};
+
 const addKeyboardHandler = () => {
   const keyboard = document.querySelector('.keyboard');
   const pressedKeys = new Set();
 
-  document.addEventListener('keydown', (e) => {
+  const keydownHandler = (e) => {
     const keyCode = e.code;
     const key = document.querySelector(`.keyboard__key-${keyCode}`);
     key.classList.add('active');
@@ -120,9 +75,9 @@ const addKeyboardHandler = () => {
     showCurrentValueOfKeys();
     checkKey(keyCode);
     e.preventDefault();
-  });
+  };
 
-  document.addEventListener('keyup', (e) => {
+  const keyupHandler = (e) => {
     const key = document.querySelector(`.keyboard__key-${e.code}`);
     if (e.code !== 'CapsLock') {
       key.classList.remove('active');
@@ -132,23 +87,71 @@ const addKeyboardHandler = () => {
       showCurrentValueOfKeys();
     }
     pressedKeys.delete(e.code);
-  });
+  };
 
-  keyboard.addEventListener('click', (e) => {
+  const keyboardHandler = (e) => {
     const eventTarget = e.target;
     const key = eventTarget.closest('.keyboard__key');
     if (!key) return;
     const keyCode = key.classList[1].split('-')[1];
-
     checkKey(keyCode);
-  });
+  };
+
+  document.addEventListener('keydown', keydownHandler);
+  document.addEventListener('keyup', keyupHandler);
+  keyboard.addEventListener('click', keyboardHandler);
 };
 
-const loadContentToDom = () => {
-  const content = getContent();
-  document.body.append(content);
-  showCurrentValueOfKeys();
-  addKeyboardHandler();
+const checkChangeLang = (pressedKeys) => {
+  if (pressedKeys.has('ShiftLeft') && pressedKeys.has('AltLeft')) {
+    lang.isEnLang = !lang.isEnLang;
+    showCurrentValueOfKeys();
+  }
+};
+
+const checkKey = (key) => {
+  const keyDom = document.querySelector(`.keyboard__key-${key}`);
+  if (key === 'ShiftLeft' || key === 'ShiftRight') {
+    isShift = true;
+    showCurrentValueOfKeys();
+  } else if (key === 'CapsLock') {
+    isCapsLock = !isCapsLock;
+    if (isCapsLock) {
+      keyDom.classList.add('active');
+    } else {
+      keyDom.classList.remove('active');
+    }
+    showCurrentValueOfKeys();
+  } else if (key === 'Tab') {
+    setValueInTextarea('\t');
+  } else if (key === 'Enter') {
+    setValueInTextarea('\n');
+  } else if (key === 'ControlLeft' || key === 'ControlRight' || key === 'AltLeft' || key === 'AltRight' || key === 'MetaLeft') {
+    return;
+  } else if (key === 'Delete' || key === 'Backspace') {
+    deleteValueInTextarea(key);
+  } else {
+    const keyValue = keys[key][currentProperty];
+    setValueInTextarea(keyValue);
+  }
+};
+
+const deleteValueInTextarea = (key) => {
+  const textarea = document.querySelector('.textarea');
+  const indexOfCursor = textarea.selectionStart;
+  const indexOfValue = key === 'Delete' ? indexOfCursor : indexOfCursor - 1;
+  textarea.value = textarea.value.slice(0, indexOfValue) + textarea.value.slice(indexOfValue + 1);
+  textarea.selectionStart = indexOfValue;
+  textarea.selectionEnd = indexOfValue;
+};
+
+const setValueInTextarea = (value) => {
+  const textarea = document.querySelector('.textarea');
+  const indexOfCursor = textarea.selectionStart;
+  textarea.value = textarea.value.slice(0, indexOfCursor) + value
+    + textarea.value.slice(indexOfCursor);
+  textarea.selectionStart = indexOfCursor + 1;
+  textarea.selectionEnd = indexOfCursor + 1;
 };
 
 export default loadContentToDom;
