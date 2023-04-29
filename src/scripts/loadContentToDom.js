@@ -47,9 +47,9 @@ const showCurrentValueOfKeys = () => {
 };
 
 const setCurrentProperty = () => {
-  if (lang.isEnLang && (!isShift && !isCapsLock)) {
+  if (lang.isEnLang && ((!isShift && !isCapsLock) || (isShift && isCapsLock))) {
     currentProperty = 'en';
-  } else if (!lang.isEnLang && (!isShift && !isCapsLock)) {
+  } else if (!lang.isEnLang && ((!isShift && !isCapsLock) || (isShift && isCapsLock))) {
     currentProperty = 'ru';
   } else if (lang.isEnLang && isShift) {
     currentProperty = 'shiftEn';
