@@ -1,0 +1,73 @@
+.keyboard {
+  padding: $padding-keyboard;
+  background-color: $color-primary-light;
+  border-radius: 5px;
+  max-width: 865px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  &__key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $size-key;
+    height: $size-key;
+    padding: 5px;
+    margin: $margin-key;
+    color: #ffffff;
+    font-weight: 700;
+    background-color: $color-primary;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out 0s;
+
+    &:hover {
+      background-color: $color-hover;
+    }
+
+    &:active, &.active {
+      background-color: $color-active;
+      border-radius: 20px;
+    }
+
+    &-Tab {
+      width: calc($size-key + $size-key / 4);
+    }
+
+    &-Enter,
+    &-ShiftRight {
+      width: calc($size-key * 2 + $margin-key * 2);
+    }
+
+    &-Backspace,
+    &-CapsLock,
+    &-ShiftLeft {
+      width: calc($size-key * 2 + $size-key / 4 + $margin-key * 2);
+    }
+
+    &-Space {
+      width: calc($size-key * 7 + $margin-key * 2 * 9);
+    }
+
+    &-Backspace,
+    &-CapsLock,
+    &-Tab,
+    &-Delete,
+    &-Enter,
+    &-ShiftLeft,
+    &-ShiftRight,
+    &-ArrowUp,
+    &-ControlLeft,
+    &-ControlRight,
+    &-MetaLeft,
+    &-AltLeft,
+    &-AltRight,
+    &-Space,
+    &-ArrowLeft,
+    &-ArrowDown,
+    &-ArrowRight {
+      background-color: $color-primary-dark;
+    }
+  }
+}

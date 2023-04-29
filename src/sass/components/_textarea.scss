@@ -1,0 +1,5 @@
+.textarea {
+  width: calc($size-key * 15 + $margin-key * 2 * 15 + $padding-keyboard * 2);
+  height: 200px;
+  margin: 20px;
+}
